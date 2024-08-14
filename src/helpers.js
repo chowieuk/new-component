@@ -33,6 +33,7 @@ module.exports.getConfig = () => {
   const defaults = {
     lang: 'js',
     dir: 'src/components',
+    props: false,
   };
 
   const globalOverrides = requireOptional(
@@ -96,7 +97,18 @@ const logComponentLang = (selected) =>
     )
     .join('  ');
 
-module.exports.logIntro = ({ name, dir, lang }) => {
+
+const logPropsChoice = (props) => {
+    return props
+        ? `${chalk.rgb(...colors.blue)("no")} ${chalk.bold.rgb(
+              ...colors.darkGray
+          )("yes")}`
+        : `${chalk.bold.rgb(...colors.darkGray)("no")} ${chalk.rgb(
+              ...colors.blue
+          )("yes")}`;
+};
+
+module.exports.logIntro = ({ name, dir, lang, props }) => {
   console.info('\n');
   console.info(
     `✨  Creating the ${chalk.bold.rgb(...colors.gold)(
@@ -107,9 +119,11 @@ module.exports.logIntro = ({ name, dir, lang }) => {
 
   const pathString = chalk.bold.rgb(...colors.blue)(dir);
   const langString = logComponentLang(lang);
+  const propsString = logPropsChoice(props)
 
   console.info(`Directory:  ${pathString}`);
   console.info(`Language:   ${langString}`);
+  console.info(`Props:      ${propsString}`);
   console.info(
     chalk.rgb(...colors.darkGray)(
       '========================================='

@@ -45,17 +45,24 @@ program
     'Path to the "components" directory (default: "src/components")',
     config.dir
   )
+  .option(
+    '-p, --props',
+    'Adds React.FN<Props>',
+    config.props)
   .parse(process.argv);
 
 const [componentName] = program.args;
 
 const options = program.opts();
 
-const fileExtension = options.lang === 'js' ? 'js' : 'tsx';
-const indexExtension = options.lang === 'js' ? 'js' : 'ts';
+const fileExtension = options.lang === "js" ? "js" : "tsx";
+const indexExtension = options.lang === "js" ? "js" : "ts";
 
 // Find the path to the selected template file.
-const templatePath = `./templates/${options.lang}.js`;
+// Use optional props template if chosen
+const templatePath = `./templates/${options.lang}${
+    options.props && options.lang === "ts" ? "props" : ""
+}.js`;
 
 // Get all of our file paths worked out, for the user's project.
 const componentDir = `${options.dir}/${componentName}`;
@@ -82,6 +89,13 @@ if (!componentName) {
   process.exit(0);
 }
 
+// Check if props was chosen along with javascript as the lang
+if (options.props && options.lang === "js") {
+    logError(
+        `Sorry, the props template can only be used in conjunction with typescript lang\nplease use new-component -l ts -p <name>`
+    );
+    process.exit(0);
+}
 // Check to see if the parent directory exists.
 // Create it if not
 createParentDirectoryIfNecessary(options.dir);
